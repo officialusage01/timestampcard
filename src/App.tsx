@@ -36,13 +36,17 @@ export default function App() {
     if (!session?.user) return;
 
     try {
+      // Simplified query to fetch cards
       const { data, error } = await supabase
         .from('cards')
         .select('*')
-        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading cards:', error);
+        throw error;
+      }
+      
       setCards(data || []);
     } catch (error: any) {
       toast.error('Error loading cards');
@@ -65,6 +69,7 @@ export default function App() {
         .single();
 
       if (error) throw error;
+      
       setCards(prevCards => [data, ...prevCards]);
       toast.success('Card created successfully!');
     } catch (error: any) {
