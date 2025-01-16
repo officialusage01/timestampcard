@@ -33,10 +33,13 @@ export default function App() {
   }, [session]);
 
   const loadCards = async () => {
+    if (!session?.user) return;
+
     try {
       const { data, error } = await supabase
         .from('cards')
         .select('*')
+        .eq('user_id', session.user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
